@@ -1,62 +1,95 @@
+#include "Renderer.h"
+#include "Vector2.h"
+#include "Input.h"
+#include <vector>
 #include <iostream>
 #include <cstdlib>
-#include "../../Engine/Source/Test.h"
 #include <SDL.h>
 
 using namespace std;
 
 int main(int argc, char* argv[])
 {
-	// initialize SDL
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	//create systems
+	Renderer renderer;
+	renderer.Initialize();
+	renderer.CreateWindow("Engine", 800, 600);
+
+	Input input;
+	input.Initialize();
+
+	Vector2 v1{ 400, 300 };
+	Vector2 v2{ 700, 500 };
+
+	std::vector<Vector2> points;
+	/*for (int i = 0; i < 100; i++) {
+		points.push_back(Vector2{rand() % 800, rand() % 600});
+	}*/
+
+	bool quit = false;
+
+	while (!quit)
 	{
-		std::cerr << "Error initializing SDL: " << SDL_GetError() << std::endl;
-		return 1;
-	}
+		//input
+		//update
+		//draw
 
-	// create window
-	// returns pointer to window if successful or nullptr if failed
-	SDL_Window* window = SDL_CreateWindow("Game Engine",
-		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		800, 600,
-		SDL_WINDOW_SHOWN);
-	if (window == nullptr)
-	{
-		std::cerr << "Error creating SDL window: " << SDL_GetError() << std::endl;
-		SDL_Quit();
-		return 1;
-	}
+		//Input
+		input.Update();
+		if (input.GetKeyDown(SDL_SCANCODE_ESCAPE)) {
+			quit = true;
+		}
+		
+		//UPDATE
+		Vector2 mousePosition = input.GetMousePosition();
+		//std::cout << mousePosition.x << " " << mousePosition.y <<std::endl;
 
-	// create renderer
-	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
-
-	while (true)
-	{
-		// clear screen
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-		SDL_RenderClear(renderer);
-
-		// draw line
-		SDL_SetRenderDrawColor(renderer, 255, 25, 1, 0);
-		SDL_RenderDrawLine(renderer, 0, 0, 800, 600);
-		SDL_RenderDrawLine(renderer, 800, 600, 300, 300);
-		SDL_RenderDrawLine(renderer, 300, 300, 0, 0);
-		SDL_SetRenderDrawColor(renderer, 21, 123, 1, 0);
-		SDL_RenderDrawLine(renderer, 0, 400, 600, 400);
+		if (input.GetMouseButtonDown(0) && !input.GetPreviousMouseButtonDown(0)) {
+			std::cout << "mouse pressed" << endl;
+			points.push_back(mousePosition);
+		}
+		if (input.GetMouseButtonDown(0) && input.GetPreviousMouseButtonDown(0)) {
+			float distance = (points.back() - mousePosition).Length();
+			if (distance > 5) {
+				points.push_back(mousePosition);
+			}
+			points.push_back(mousePosition);
+		}
+		
+		/*Vector2 speed{ 0.1f, -0.1f };
+		for (Vector2& point : points) {
+			point = point + speed;
+		}*/
+		
+		//// clear screen
+		renderer.SetColor(0, 0, 0, 0);
+		renderer.BeginFrame();
 		
 
-		
-		SDL_SetRenderDrawColor(renderer, rand() % 256, rand() % 256, rand() % 256, rand() % 256);
-		SDL_RenderDrawLine(renderer, rand() % 801, rand() % 601, rand() % 801, rand() % 601);
-		SDL_RenderDrawLine(renderer, rand() % 801, rand() % 601, rand() % 801, rand() % 601);
-		SDL_RenderDrawLine(renderer, rand() % 801, rand() % 601, rand() % 801, rand() % 601);
-		SDL_RenderDrawLine(renderer, rand() % 801, rand() % 601, rand() % 801, rand() % 601);
-		SDL_RenderDrawLine(renderer, rand() % 801, rand() % 601, rand() % 801, rand() % 601);
-		
+		renderer.SetColor(100, 100, 100, 100);
+		for (int i = 0; points.size() > 1 && i < points.size() - 1; i++) {
+			renderer.SetColor(rand() % 256, rand() % 256, rand() % 256, rand() % 256);
+			renderer.DrawLine(points[i].x, points[i].y, points[i + 1].x, points[i + 1].y);
+		}
 
 
-		// show screen
-		SDL_RenderPresent(renderer);
+		//SDL_RenderClear(renderer);
+
+		//// draw line
+		/*renderer.SetColor(0, 255, 30, 0);
+		renderer.DrawLine(0, 0, 800, 300);
+		renderer.DrawLine(800, 300, 0, 300);
+		renderer.DrawLine(0, 300, 0, 0);
+		renderer.SetColor(rand() % 256, rand() % 256, rand() % 256, rand() % 256);
+		renderer.DrawLine(rand() % 256, rand() % 256, rand() % 256, rand() % 256);
+		renderer.SetColor(rand() % 256, rand() % 256, rand() % 256, rand() % 256);
+		renderer.DrawLine(rand() % 256, rand() % 256, rand() % 256, rand() % 256);
+		renderer.DrawLine(v1.x, v1.y, v2.x, v2.y);*/
+
+		
+		
+		//// show screen
+		renderer.EndFrame();
 	}
 
 	return 0;
