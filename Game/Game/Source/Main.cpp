@@ -4,11 +4,14 @@
 #include "Particle.h"
 #include "Random.h"
 #include "EngineTime.h"
+#include "MathUtils.h"
+#include "Model.h"
 
 #include <vector>
 #include <iostream>
 #include <cstdlib>
 #include <SDL.h>
+#include <fmod.hpp>
 
 using namespace std;
 
@@ -22,35 +25,83 @@ int main(int argc, char* argv[])
 	renderer.Initialize();
 	renderer.CreateWindow("Engine", width, height);
 
+	// create audio system
+	FMOD::System* audio;
+	FMOD::System_Create(&audio);
+
+	void* extradriverdata = nullptr;
+	audio->init(32, FMOD_INIT_NORMAL, extradriverdata);
+
+	FMOD::Sound* sound = nullptr;
+	audio->createSound("test.wav", FMOD_DEFAULT, 0, &sound);
+
+	audio->playSound(sound, 0, false, nullptr);
+
+	std::vector<FMOD::Sound*> sounds;
+	
+	audio->createSound("bass.wav", FMOD_DEFAULT, 0, &sound);
+	sounds.push_back(sound);
+
+	audio->createSound("snare.wav", FMOD_DEFAULT, 0, &sound);
+	sounds.push_back(sound);
+
+	audio->createSound("clap.wav", FMOD_DEFAULT, 0, &sound);
+	sounds.push_back(sound);
+	
+	audio->createSound("close-hat.wav", FMOD_DEFAULT, 0, &sound);
+	sounds.push_back(sound);
+
+	audio->createSound("open-hat.wav", FMOD_DEFAULT, 0, &sound);
+	sounds.push_back(sound);
+
+	audio->createSound("cowbell.wav", FMOD_DEFAULT, 0, &sound);
+	sounds.push_back(sound);
+
+	
+
 	Input input;
 	input.Initialize();
 
 	Time time;
 
 	std::vector<Particle> particles;
-	
+	float offset = 0;
+
+	std::vector<Vector2> points;
+	points.push_back(Vector2{ -5,5, });
+	points.push_back(Vector2{ 0,-5, });
+	points.push_back(Vector2{ 5,5, });
+	points.push_back(Vector2{ -5,5, });
+	Model model{ points, Color{1,1,1,0} };
+	Vector2 position{ 400,400 };
+	float rotation = 0;
 
 	bool quit = false;
 
 	while (!quit)
 	{
 		time.Tick();
-		//std::cout << time.GetTime() << endl;
-		//Input
-		
-		
 		//UPDATE
 		input.Update();
 		if (input.GetKeyDown(SDL_SCANCODE_ESCAPE)) {
 			quit = true;
 		}
 
+		Vector2 velocity{ 0,0 };
+		if (input.GetKeyDown(SDL_SCANCODE_LEFT)) velocity.x = -100;
+		if (input.GetKeyDown(SDL_SCANCODE_RIGHT)) velocity.x = 100;
+		if (input.GetKeyDown(SDL_SCANCODE_DOWN)) velocity.y = 100;
+		if (input.GetKeyDown(SDL_SCANCODE_UP)) velocity.y = -100;
+
+		position = position + velocity * time.GetDeltaTime();
+		rotation = rotation + time.GetDeltaTime();
+
 		Vector2 mousePosition = input.GetMousePosition();
 		if (input.GetMouseButtonDown(0) and !input.GetPreviousMouseButtonDown(0)) {
-			for (int i = 0; i < random(10, 20); i++) {
-				Vector2 velocity = { randomf(-300, 300), randomf(-300, 300) };
-				float lifespan = randomf(0.3, 0.5);
-				particles.push_back(Particle(mousePosition, velocity, lifespan));
+			for (int i = 0; i < random(10, 600); i++) {
+				//Vector2 velocity = randomOnUnitCircle();
+				//float lifespan = randomf(0.3, 0.5);
+				particles.push_back(Particle(mousePosition, randomOnUnitCircle() * random(10,400), randomf(0.01f,0.7f), random(0,255), random(0, 255), random(0, 255), 0));
 			}
 		}
 
@@ -63,15 +114,48 @@ int main(int argc, char* argv[])
 
 		//// clear screen
 		renderer.SetColor(0, 0, 0, 0);
+		
 		renderer.BeginFrame();
 
-		//Draw shape
+		renderer.SetColor(255, 255, 255, 0);
+		float radius = 2.0f;
+		offset += (360 * time.GetDeltaTime());
+		for (float angle = 0; angle < 360; angle += 360 / 120) {
+			float x = Math::Cos(Math::DegToRad(angle + offset)) * Math::Sin((offset + angle) * 0.11f) * radius;
+			float y = Math::Sin(Math::DegToRad(angle + offset)) * Math::Sin((offset + angle) * 0.032199f) * radius;
+
+			renderer.SetColor(random(0, 255), random(0, 255), random(0, 255), 0);
+			renderer.DrawRect(400 + x, 400 + y, 4.0f, 4.0f);
+		}
+
+		//Draw particles
 		renderer.SetColor(255, 255, 255, 0);
 		for (Particle& particle : particles) {
 			particle.Draw(renderer);
 		}
+		//sounds 
+		if (input.GetKeyDown(SDL_SCANCODE_Q) && !input.GetPreviousKeyDown(SDL_SCANCODE_Q)) {
+			audio->playSound(sounds[0], 0, false, nullptr);
+		}
+		if (input.GetKeyDown(SDL_SCANCODE_W) && !input.GetPreviousKeyDown(SDL_SCANCODE_W)) {
+			audio->playSound(sounds[1], 0, false, nullptr);
+		}
+		if (input.GetKeyDown(SDL_SCANCODE_E) && !input.GetPreviousKeyDown(SDL_SCANCODE_E)) {
+			audio->playSound(sounds[4], 0, false, nullptr);
+		}
+
+		if (input.GetKeyDown(SDL_SCANCODE_T) && !input.GetPreviousKeyDown(SDL_SCANCODE_S)) {
+			for (int i = 0; i < random(20, 583) - 1; i++) {
+				audio->playSound(sounds[random(0,6)], 0, false, nullptr);
+			}
+			
+		}
+
+		renderer.SetColor(255, 255, 255, 0);
+		model.Draw(renderer, position, rotation, 30);
 
 		renderer.EndFrame();
+		audio->update();
 	}
 
 	return 0;
