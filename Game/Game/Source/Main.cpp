@@ -6,6 +6,7 @@
 #include "EngineTime.h"
 #include "MathUtils.h"
 #include "Model.h"
+#include "Transform.h"
 
 #include <vector>
 #include <iostream>
@@ -68,33 +69,36 @@ int main(int argc, char* argv[])
 	float offset = 0;
 
 	std::vector<Vector2> points;
+	points.push_back(Vector2{ 5,0, });
+	points.push_back(Vector2{ -5,-5, });
 	points.push_back(Vector2{ -5,5, });
-	points.push_back(Vector2{ 0,-5, });
-	points.push_back(Vector2{ 5,5, });
-	points.push_back(Vector2{ -5,5, });
-	Model model{ points, Color{1,1,1,0} };
-	Vector2 position{ 400,400 };
-	float rotation = 0;
+	points.push_back(Vector2{ 5,0, });
+	
+	Model model{ points, Color{0,1,0,0} };
+
+	Transform transform{ {renderer.GetWidth() >> 1,renderer.GetHeight() >> 1}, 0, 5};
 
 	bool quit = false;
 
 	while (!quit)
 	{
 		time.Tick();
-		//UPDATE
+		//Input
 		input.Update();
 		if (input.GetKeyDown(SDL_SCANCODE_ESCAPE)) {
 			quit = true;
 		}
+		float thrust = 0;
+		if (input.GetKeyDown(SDL_SCANCODE_LEFT)) transform.rotation -= Math::DegToRad(100) * time.GetDeltaTime();
+		if (input.GetKeyDown(SDL_SCANCODE_RIGHT)) transform.rotation += Math::DegToRad(100) * time.GetDeltaTime();
+		if (input.GetKeyDown(SDL_SCANCODE_DOWN)) thrust = -400;
+		if (input.GetKeyDown(SDL_SCANCODE_UP)) thrust = 400;
 
-		Vector2 velocity{ 0,0 };
-		if (input.GetKeyDown(SDL_SCANCODE_LEFT)) velocity.x = -100;
-		if (input.GetKeyDown(SDL_SCANCODE_RIGHT)) velocity.x = 100;
-		if (input.GetKeyDown(SDL_SCANCODE_DOWN)) velocity.y = 100;
-		if (input.GetKeyDown(SDL_SCANCODE_UP)) velocity.y = -100;
-
-		position = position + velocity * time.GetDeltaTime();
-		rotation = rotation + time.GetDeltaTime();
+		Vector2 velocity = Vector2{ thrust,0.0f }.Rotate(transform.rotation);
+		transform.position += velocity * time.GetDeltaTime();
+		transform.position.x = Math::Wrap(transform.position.x, (float)renderer.GetWidth());
+		transform.position.y = Math::Wrap(transform.position.y, (float)renderer.GetHeight());
+		//transform.rotation = velocity.Angle();
 
 		Vector2 mousePosition = input.GetMousePosition();
 		if (input.GetMouseButtonDown(0) and !input.GetPreviousMouseButtonDown(0)) {
@@ -117,8 +121,8 @@ int main(int argc, char* argv[])
 		
 		renderer.BeginFrame();
 
-		renderer.SetColor(255, 255, 255, 0);
-		float radius = 2.0f;
+		/*renderer.SetColor(255, 255, 255, 0);
+		float radius = 80.0f;
 		offset += (360 * time.GetDeltaTime());
 		for (float angle = 0; angle < 360; angle += 360 / 120) {
 			float x = Math::Cos(Math::DegToRad(angle + offset)) * Math::Sin((offset + angle) * 0.11f) * radius;
@@ -126,7 +130,7 @@ int main(int argc, char* argv[])
 
 			renderer.SetColor(random(0, 255), random(0, 255), random(0, 255), 0);
 			renderer.DrawRect(400 + x, 400 + y, 4.0f, 4.0f);
-		}
+		}*/
 
 		//Draw particles
 		renderer.SetColor(255, 255, 255, 0);
@@ -143,7 +147,6 @@ int main(int argc, char* argv[])
 		if (input.GetKeyDown(SDL_SCANCODE_E) && !input.GetPreviousKeyDown(SDL_SCANCODE_E)) {
 			audio->playSound(sounds[4], 0, false, nullptr);
 		}
-
 		if (input.GetKeyDown(SDL_SCANCODE_T) && !input.GetPreviousKeyDown(SDL_SCANCODE_S)) {
 			for (int i = 0; i < random(20, 583) - 1; i++) {
 				audio->playSound(sounds[random(0,6)], 0, false, nullptr);
@@ -152,7 +155,7 @@ int main(int argc, char* argv[])
 		}
 
 		renderer.SetColor(255, 255, 255, 0);
-		model.Draw(renderer, position, rotation, 30);
+		model.Draw(renderer, transform);
 
 		renderer.EndFrame();
 		audio->update();

@@ -1,6 +1,7 @@
 #pragma once
 #include <cmath>
 
+
 namespace Math
 {
 	constexpr float Pi = 3.14159265359f; //180
@@ -50,5 +51,12 @@ namespace Math
 		if (v > max) return max;
 
 		return v;
+	}
+
+	inline int Wrap(int value, int max) {
+		return value % max + (value < 0) ? max : 0;
+	}
+	inline float Wrap(float value, float max) {
+		return std::fmodf(value, max) + ((value < 0) ? max : 0);
 	}
 }

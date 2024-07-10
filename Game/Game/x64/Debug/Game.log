@@ -1,3 +1,3 @@
 ﻿  Main.cpp
-C:\NeumontWorkspace\C++2\GameEngine\Game\Game\Source\Main.cpp(104,78): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\NeumontWorkspace\C++2\GameEngine\Game\Game\Source\Main.cpp(108,78): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   Game.vcxproj -> C:\NeumontWorkspace\C++2\GameEngine\Game\x64\Debug\Game.exe
