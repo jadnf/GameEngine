@@ -69,14 +69,21 @@ int main(int argc, char* argv[])
 	float offset = 0;
 
 	std::vector<Vector2> points;
-	points.push_back(Vector2{ 5,0, });
-	points.push_back(Vector2{ -5,-5, });
-	points.push_back(Vector2{ -5,5, });
-	points.push_back(Vector2{ 5,0, });
+	points.push_back(Vector2{ 0.0F,1.5f });
+	points.push_back(Vector2{ 1.0F,0.5f });
+	points.push_back(Vector2{ 1.5F,0.5f });
+	points.push_back(Vector2{ 1.5F,0.5f });
+	points.push_back(Vector2{ 2.5F,0.0f });
+	points.push_back(Vector2{ 1.5F,-0.5f });
+	points.push_back(Vector2{ 1.0F,-0.5f });
+	points.push_back(Vector2{ 0.0F,-1.5f });
+	points.push_back(Vector2{ 0.5F,0.0f });
+	points.push_back(Vector2{ 0.0F,1.5f });
+	
 	
 	Model model{ points, Color{0,1,0,0} };
 
-	Transform transform{ {renderer.GetWidth() >> 1,renderer.GetHeight() >> 1}, 0, 5};
+	Transform transform{ {renderer.GetWidth() >> 1,renderer.GetHeight() >> 1}, 0, 10};
 
 	bool quit = false;
 
