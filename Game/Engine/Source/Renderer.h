@@ -31,3 +31,4 @@ private:
 	int m_width = 1;
 	int m_height = 1;
 };
+
