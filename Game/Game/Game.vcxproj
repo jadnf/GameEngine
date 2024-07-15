@@ -20,11 +20,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp" />
+    <ClCompile Include="Source\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine.vcxproj">
       <Project>{f13670c9-0138-4ea0-bd60-e28508f37074}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Player.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

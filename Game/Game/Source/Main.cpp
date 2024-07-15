@@ -1,4 +1,6 @@
 #include "Engine.h"
+#include "Player.h"
+#include "Scene.h"
 
 #include <vector>
 #include <iostream>
@@ -19,12 +21,12 @@ int main(int argc, char* argv[])
 	
 
 	// create audio system
-	g_engine.GetAudio()->AddSound("bass.wav");
-	g_engine.GetAudio()->AddSound("snare.wav");
-	g_engine.GetAudio()->AddSound("clap.wav");
-	g_engine.GetAudio()->AddSound("close-hat.wav");
-	g_engine.GetAudio()->AddSound("open-hat.wav");
-	g_engine.GetAudio()->AddSound("cowbell.wav");
+	g_engine.GetAudio().AddSound("bass.wav");
+	g_engine.GetAudio().AddSound("snare.wav");
+	g_engine.GetAudio().AddSound("clap.wav");
+	g_engine.GetAudio().AddSound("close-hat.wav");
+	g_engine.GetAudio().AddSound("open-hat.wav");
+	g_engine.GetAudio().AddSound("cowbell.wav");
 	
 	
 
@@ -46,34 +48,29 @@ int main(int argc, char* argv[])
 	points.push_back(Vector2{ 0.0F,1.5f });
 	
 	
-	Model model{ points, Color{0,1,0,0} };
+	Model* model = new Model{ points, Color{0,1,0,0} };
+	Transform transform{ {g_engine.GetRenderer().GetWidth() >> 1,g_engine.GetRenderer().GetHeight() >> 1}, 0, 10};
 
-	Transform transform{ {g_engine.GetRenderer()->GetWidth() >> 1,g_engine.GetRenderer()->GetHeight() >> 1}, 0, 10};
+
+	Scene* scene = new Scene();
+	
+	Player* player = new Player(5, transform, model);
+	player->SetDamping(1.4f);
+	scene->AddActor(player);
+	
 
 	bool quit = false;
-
 	while (!quit)
 	{
 		time.Tick();
 		//Input
-		g_engine.GetInput()->Update();
-		if (g_engine.GetInput()->GetKeyDown(SDL_SCANCODE_ESCAPE)) {
+		g_engine.GetInput().Update();
+		if (g_engine.GetInput().GetKeyDown(SDL_SCANCODE_ESCAPE)) {
 			quit = true;
 		}
-		float thrust = 0;
-		if (g_engine.GetInput()->GetKeyDown(SDL_SCANCODE_LEFT)) transform.rotation -= Math::DegToRad(100) * time.GetDeltaTime();
-		if (g_engine.GetInput()->GetKeyDown(SDL_SCANCODE_RIGHT)) transform.rotation += Math::DegToRad(100) * time.GetDeltaTime();
-		if (g_engine.GetInput()->GetKeyDown(SDL_SCANCODE_DOWN)) thrust = -400;
-		if (g_engine.GetInput()->GetKeyDown(SDL_SCANCODE_UP)) thrust = 400;
-
-		Vector2 velocity = Vector2{ thrust,0.0f }.Rotate(transform.rotation);
-		transform.position += velocity * time.GetDeltaTime();
-		transform.position.x = Math::Wrap(transform.position.x, (float)g_engine.GetRenderer()->GetWidth());
-		transform.position.y = Math::Wrap(transform.position.y, (float)g_engine.GetRenderer()->GetHeight());
-		//transform.rotation = velocity.Angle();
-
-		Vector2 mousePosition = g_engine.GetInput()->GetMousePosition();
-		if (g_engine.GetInput()->GetMouseButtonDown(0) and !g_engine.GetInput()->GetPreviousMouseButtonDown(0)) {
+	
+		Vector2 mousePosition = g_engine.GetInput().GetMousePosition();
+		if (g_engine.GetInput().GetMouseButtonDown(0) and !g_engine.GetInput().GetPreviousMouseButtonDown(0)) {
 			for (int i = 0; i < random(10, 600); i++) {
 				//Vector2 velocity = randomOnUnitCircle();
 				//float lifespan = randomf(0.3, 0.5);
@@ -85,36 +82,38 @@ int main(int argc, char* argv[])
 			particle.Update(time.GetDeltaTime());
 
 		}
+		scene->Update(time.GetDeltaTime());
+		scene->Draw(g_engine.GetRenderer());
 		
 
 
 		//// clear screen
-		g_engine.GetRenderer()->SetColor(0, 0, 0, 0);
+		g_engine.GetRenderer().SetColor(0, 0, 0, 0);
 		
-		g_engine.GetRenderer()->BeginFrame();
+		g_engine.GetRenderer().BeginFrame();
 
 		//Draw particles
-		g_engine.GetRenderer()->SetColor(255, 255, 255, 0);
+		g_engine.GetRenderer().SetColor(255, 255, 255, 0);
 		for (Particle& particle : particles) {
-			particle.Draw(*g_engine.GetRenderer());
+			particle.Draw(g_engine.GetRenderer());
 		}
 
-		g_engine.GetRenderer()->SetColor(255, 255, 255, 0);
-		model.Draw(*g_engine.GetRenderer(), transform);
+		g_engine.GetRenderer().SetColor(255, 255, 255, 0);
+		player->Draw(g_engine.GetRenderer());
 
-		g_engine.GetRenderer()->EndFrame();
+		g_engine.GetRenderer().EndFrame();
 		//sounds 
-		if (g_engine.GetInput()->GetKeyDown(SDL_SCANCODE_Q) && !g_engine.GetInput()->GetPreviousKeyDown(SDL_SCANCODE_Q)) {
-			g_engine.GetAudio()->PlaySound("bass.wav");
+		if (g_engine.GetInput().GetKeyDown(SDL_SCANCODE_Q) && !g_engine.GetInput().GetPreviousKeyDown(SDL_SCANCODE_Q)) {
+			g_engine.GetAudio().PlaySound("bass.wav");
 		}
-		if (g_engine.GetInput()->GetKeyDown(SDL_SCANCODE_W) && !g_engine.GetInput()->GetPreviousKeyDown(SDL_SCANCODE_W)) {
-			g_engine.GetAudio()->PlaySound("snare.wav");
+		if (g_engine.GetInput().GetKeyDown(SDL_SCANCODE_W) && !g_engine.GetInput().GetPreviousKeyDown(SDL_SCANCODE_W)) {
+			g_engine.GetAudio().PlaySound("snare.wav");
 		}
-		if (g_engine.GetInput()->GetKeyDown(SDL_SCANCODE_E) && !g_engine.GetInput()->GetPreviousKeyDown(SDL_SCANCODE_E)) {
-			g_engine.GetAudio()->PlaySound("cowell.wav");
+		if (g_engine.GetInput().GetKeyDown(SDL_SCANCODE_E) && !g_engine.GetInput().GetPreviousKeyDown(SDL_SCANCODE_E)) {
+			g_engine.GetAudio().PlaySound("cowbell.wav");
 		}
 		
-		g_engine.GetAudio()->Update();
+		g_engine.GetAudio().Update();
 	}
 
 	return 0;
