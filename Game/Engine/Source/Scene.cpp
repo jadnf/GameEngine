@@ -17,5 +17,6 @@ void Scene::Draw(Renderer& renderer)
 
 void Scene::AddActor(Actor* actor)
 {
+	actor->m_scene = this;
 	m_actors.push_back(actor);
 }

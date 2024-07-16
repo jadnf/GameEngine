@@ -1,6 +1,7 @@
 #include "Engine.h"
 #include "Player.h"
 #include "Scene.h"
+#include "Enemy.h"
 
 #include <vector>
 #include <iostream>
@@ -49,16 +50,19 @@ int main(int argc, char* argv[])
 	
 	
 	Model* model = new Model{ points, Color{0,1,0,0} };
-	Transform transform{ {g_engine.GetRenderer().GetWidth() >> 1,g_engine.GetRenderer().GetHeight() >> 1}, 0, 10};
-
-
 	Scene* scene = new Scene();
-	
-	Player* player = new Player(5, transform, model);
+	Transform transform{ {g_engine.GetRenderer().GetWidth() >> 1,g_engine.GetRenderer().GetHeight() >> 1}, 0, 10};
+	Player* player = new Player(600, transform, model);
 	player->SetDamping(1.4f);
 	scene->AddActor(player);
-	
 
+	Model* enemyModel = new Model{ points, Color{1,0,0,0} };
+	auto* enemy = new Enemy(10000, Transform{ {300, 300}, 0, 10 }, enemyModel);
+	scene->AddActor(enemy);
+
+	
+	
+	//main loop
 	bool quit = false;
 	while (!quit)
 	{
@@ -100,6 +104,7 @@ int main(int argc, char* argv[])
 
 		g_engine.GetRenderer().SetColor(255, 255, 255, 0);
 		player->Draw(g_engine.GetRenderer());
+		scene->Draw(g_engine.GetRenderer());
 
 		g_engine.GetRenderer().EndFrame();
 		//sounds 

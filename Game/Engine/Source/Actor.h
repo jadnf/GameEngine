@@ -3,6 +3,7 @@
 
 class Model;
 class Renderer;
+class Scene;
 
 class Actor
 {
@@ -18,6 +19,11 @@ public:
 	virtual void Draw(Renderer& renderer);
 
 	void SetDamping(float damping) { m_damping = damping; }
+	void SetLifespan(float lifespan) { m_lifespan = lifespan; }
+
+	const Transform& GetTransform() { return m_transform; }
+
+	friend class Scene;
 
 protected:
 	bool m_destroyed = false;
@@ -28,5 +34,6 @@ protected:
 	float m_damping{ 0 };
 
 	Model* m_model{ nullptr };
+	Scene* m_scene{ nullptr };
 };
 

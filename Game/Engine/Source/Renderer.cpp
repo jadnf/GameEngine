@@ -27,15 +27,15 @@ bool Renderer::CreateWindow(std::string title, int width, int height)
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		width, height,
 		SDL_WINDOW_SHOWN);
+
+	// create renderer
+	m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (m_window == nullptr)
 	{
 		std::cerr << "Error creating SDL window: " << SDL_GetError() << std::endl;
 		SDL_Quit();
 		return false;
 	}
-
-	// create renderer
-	m_renderer = SDL_CreateRenderer(m_window, -1, 0);
 	return true;
 }
 
