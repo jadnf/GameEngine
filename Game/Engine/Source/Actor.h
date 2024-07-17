@@ -1,5 +1,6 @@
 #pragma once
 #include "Transform.h"
+#include <string>
 
 class Model;
 class Renderer;
@@ -23,9 +24,15 @@ public:
 
 	const Transform& GetTransform() { return m_transform; }
 
+	void SetTag(const std::string& tag) { m_tag = tag; }
+	const std::string& GetTag() { return m_tag; }
+
+	virtual void OnCollision(Actor* actor) = 0;
+
 	friend class Scene;
 
 protected:
+	std::string m_tag;
 	bool m_destroyed = false;
 	float m_lifespan = 0;
 

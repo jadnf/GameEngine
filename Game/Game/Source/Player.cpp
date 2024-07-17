@@ -2,6 +2,7 @@
 #include "Engine.h"
 #include "Bullet.h"
 #include "Scene.h"
+#include <iostream>
 
 void Player::Update(float dt)
 {
@@ -21,8 +22,9 @@ void Player::Update(float dt)
 	m_transform.position.y = Math::Wrap(m_transform.position.y, (float)g_engine.GetRenderer().GetHeight());
 
 	//fire
+	m_fireTimer -= dt;
 	if (g_engine.GetInput().GetKeyDown(SDL_SCANCODE_SPACE) && m_fireTimer <= 0) {
-		m_fireTimer = 1;
+		m_fireTimer = 0.5f;
 
 		std::vector<Vector2> points;
 		points.push_back(Vector2{ 5, 0 });
@@ -36,8 +38,16 @@ void Player::Update(float dt)
 
 		Bullet* bullet = new Bullet(400.0f, transform, model);
 		bullet->SetLifespan(1);
+		bullet->SetTag("Player");
 		m_scene->AddActor(bullet);
 	}
 
 	Actor::Update(dt);
+}
+
+void Player::OnCollision(Actor* actor)
+{
+	if (actor->GetTag() == "Enemy") {
+		m_destroyed = true;
+	}
 }

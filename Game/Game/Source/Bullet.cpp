@@ -10,3 +10,7 @@ void Bullet::Update(float dt)
 
 	Actor::Update(dt);
 }
+
+void Bullet::OnCollision(Actor* actor)
+{
+}

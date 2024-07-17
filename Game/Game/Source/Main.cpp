@@ -54,11 +54,18 @@ int main(int argc, char* argv[])
 	Transform transform{ {g_engine.GetRenderer().GetWidth() >> 1,g_engine.GetRenderer().GetHeight() >> 1}, 0, 10};
 	Player* player = new Player(600, transform, model);
 	player->SetDamping(1.4f);
+	player->SetTag("Player");
 	scene->AddActor(player);
 
 	Model* enemyModel = new Model{ points, Color{1,0,0,0} };
-	auto* enemy = new Enemy(10000, Transform{ {300, 300}, 0, 10 }, enemyModel);
+	auto* enemy = new Enemy(10000, Transform{ {g_engine.GetRenderer().GetWidth(), g_engine.GetRenderer().GetWidth()}, 0, 10}, enemyModel);
+	enemy->SetDamping(1.0f);
+	enemy->SetTag("Enemy");
 	scene->AddActor(enemy);
+
+
+
+	float spawnTimer = 2;
 
 	
 	
@@ -80,6 +87,16 @@ int main(int argc, char* argv[])
 				//float lifespan = randomf(0.3, 0.5);
 				particles.push_back(Particle(mousePosition, randomOnUnitCircle() * random(10,400), randomf(0.01f,0.7f), random(0,255), random(0, 255), random(0, 255), 0));
 			}
+		}
+
+		spawnTimer -= time.GetDeltaTime();
+		if (spawnTimer <= 0) {
+			Model* enemyModel = new Model{ points, Color{1,0,0,0} };
+			auto* enemy = new Enemy(10000, Transform{ {g_engine.GetRenderer().GetWidth(), g_engine.GetRenderer().GetWidth()}, 0, 10 }, enemyModel);
+			enemy->SetDamping(1.0f);
+			enemy->SetTag("Enemy");
+			scene->AddActor(enemy);
+			spawnTimer = 1;
 		}
 
 		for (Particle& particle : particles) {
