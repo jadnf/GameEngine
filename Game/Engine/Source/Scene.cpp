@@ -14,8 +14,7 @@ void Scene::Update(float dt)
 	while (iter != m_actors.end()) {
 		iter = ((*iter)->m_destroyed) ? m_actors.erase(iter) : ++iter;
 	}*/
-
-	m_actors.erase(std::remove_if(m_actors.begin(), m_actors.end(), [](Actor* actor) { return actor->m_destroyed; }), m_actors.end());
+	std::erase_if(m_actors, [](Actor* actor) { return actor->m_destroyed; });
 
 	//collision
 	for (Actor* actor1 : m_actors) {

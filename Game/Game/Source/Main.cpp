@@ -2,6 +2,8 @@
 #include "Player.h"
 #include "Scene.h"
 #include "Enemy.h"
+#include "GameData.h"
+#include "ThaGame.h"
 
 #include <vector>
 #include <iostream>
@@ -14,11 +16,32 @@ using namespace std;
 int main(int argc, char* argv[])
 {
 	g_engine.Initialize();
+
+	ThaGame* game = new ThaGame(&g_engine);
+	game->Initialize();
+
+	while (!g_engine.IsQuit())
+	{
+		g_engine.Update();
+		game->Update(g_engine.GetTime().GetDeltaTime());
+
+		g_engine.GetRenderer().SetColor(0, 0, 0, 0);
+		g_engine.GetRenderer().BeginFrame();
+
+		game->Draw(g_engine.GetRenderer());
+
+		g_engine.GetRenderer().EndFrame();
+	}
+
+	return 0;
+}
+/*
 	//create systems
 	int width = 800;
 	int height = 800;
 
-	Time time;
+
+
 	
 
 	// create audio system
@@ -49,7 +72,7 @@ int main(int argc, char* argv[])
 	points.push_back(Vector2{ 0.0F,1.5f });
 	
 	
-	Model* model = new Model{ points, Color{0,1,0,0} };
+	Model* model = new Model{ GameData::shipPoints, Color{0,1,0,0} };
 	Scene* scene = new Scene();
 	Transform transform{ {g_engine.GetRenderer().GetWidth() >> 1,g_engine.GetRenderer().GetHeight() >> 1}, 0, 10};
 	Player* player = new Player(600, transform, model);
@@ -57,8 +80,8 @@ int main(int argc, char* argv[])
 	player->SetTag("Player");
 	scene->AddActor(player);
 
-	Model* enemyModel = new Model{ points, Color{1,0,0,0} };
-	auto* enemy = new Enemy(10000, Transform{ {g_engine.GetRenderer().GetWidth(), g_engine.GetRenderer().GetWidth()}, 0, 10}, enemyModel);
+	Model* enemyModel = new Model{ GameData::shipPoints, Color{1,0,0,0} };
+	auto* enemy = new Enemy(1000, Transform{ {g_engine.GetRenderer().GetWidth(), g_engine.GetRenderer().GetWidth()}, 0, 10}, enemyModel);
 	enemy->SetDamping(1.0f);
 	enemy->SetTag("Enemy");
 	scene->AddActor(enemy);
@@ -70,15 +93,13 @@ int main(int argc, char* argv[])
 	
 	
 	//main loop
-	bool quit = false;
-	while (!quit)
+	
+	while (!g_engine.IsQuit())
 	{
-		time.Tick();
+		g_engine.Update();
+
 		//Input
-		g_engine.GetInput().Update();
-		if (g_engine.GetInput().GetKeyDown(SDL_SCANCODE_ESCAPE)) {
-			quit = true;
-		}
+		
 	
 		Vector2 mousePosition = g_engine.GetInput().GetMousePosition();
 		if (g_engine.GetInput().GetMouseButtonDown(0) and !g_engine.GetInput().GetPreviousMouseButtonDown(0)) {
@@ -89,10 +110,10 @@ int main(int argc, char* argv[])
 			}
 		}
 
-		spawnTimer -= time.GetDeltaTime();
+		spawnTimer -= g_engine.GetTime().GetDeltaTime();
 		if (spawnTimer <= 0) {
-			Model* enemyModel = new Model{ points, Color{1,0,0,0} };
-			auto* enemy = new Enemy(10000, Transform{ {g_engine.GetRenderer().GetWidth(), g_engine.GetRenderer().GetWidth()}, 0, 10 }, enemyModel);
+			Model* enemyModel = new Model{ GameData::shipPoints, Color{1,0,0,0} };
+			auto* enemy = new Enemy(1000, Transform{ {g_engine.GetRenderer().GetWidth(), g_engine.GetRenderer().GetWidth()}, 0, 10 }, enemyModel);
 			enemy->SetDamping(1.0f);
 			enemy->SetTag("Enemy");
 			scene->AddActor(enemy);
@@ -100,10 +121,10 @@ int main(int argc, char* argv[])
 		}
 
 		for (Particle& particle : particles) {
-			particle.Update(time.GetDeltaTime());
+			particle.Update(g_engine.GetTime().GetDeltaTime());
 
 		}
-		scene->Update(time.GetDeltaTime());
+		scene->Update(g_engine.GetTime().GetDeltaTime());
 		scene->Draw(g_engine.GetRenderer());
 		
 
@@ -134,9 +155,7 @@ int main(int argc, char* argv[])
 		if (g_engine.GetInput().GetKeyDown(SDL_SCANCODE_E) && !g_engine.GetInput().GetPreviousKeyDown(SDL_SCANCODE_E)) {
 			g_engine.GetAudio().PlaySound("cowbell.wav");
 		}
-		
-		g_engine.GetAudio().Update();
 	}
 
 	return 0;
-}
+}*/

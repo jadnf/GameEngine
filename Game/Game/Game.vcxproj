@@ -21,8 +21,10 @@
   <ItemGroup>
     <ClCompile Include="Source\Bullet.cpp" />
     <ClCompile Include="Source\Enemy.cpp" />
+    <ClCompile Include="Source\GameData.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Player.cpp" />
+    <ClCompile Include="Source\ThaGame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine.vcxproj">
@@ -32,7 +34,9 @@
   <ItemGroup>
     <ClInclude Include="Source\Bullet.h" />
     <ClInclude Include="Source\Enemy.h" />
+    <ClInclude Include="Source\GameData.h" />
     <ClInclude Include="Source\Player.h" />
+    <ClInclude Include="Source\ThaGame.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -93,6 +97,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\NeumontWorkspace\C++2\GameEngine\Game\ThirdParty\fmod\core\inc;C:\NeumontWorkspace\C++2\GameEngine\Game\Engine\Source;$(SolutionDir)ThirdParty\SDL2\include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -110,6 +115,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\NeumontWorkspace\C++2\GameEngine\Game\ThirdParty\fmod\core\inc;C:\NeumontWorkspace\C++2\GameEngine\Game\Engine\Source;$(SolutionDir)ThirdParty\SDL2\include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,6 +133,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\NeumontWorkspace\C++2\GameEngine\Game\ThirdParty\fmod\core\inc;C:\NeumontWorkspace\C++2\GameEngine\Game\Engine\Source;$(SolutionDir)ThirdParty\SDL2\include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -144,6 +151,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\NeumontWorkspace\C++2\GameEngine\Game\ThirdParty\fmod\core\inc;C:\NeumontWorkspace\C++2\GameEngine\Game\Engine\Source;$(SolutionDir)ThirdParty\SDL2\include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
