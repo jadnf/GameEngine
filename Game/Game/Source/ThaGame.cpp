@@ -4,11 +4,26 @@
 #include "Player.h"
 #include "GameData.h"
 #include "Enemy.h"
+#include <string>
 
 
 bool ThaGame::Initialize()
 {
 	m_scene = new Scene();
+
+	m_font = new Font;
+	m_font->Load("Open 24 Display St.ttf", 20);
+
+	m_fontLarge = new Font;
+	m_fontLarge->Load("Open 24 Display St.ttf", 75);
+	
+	m_textLives = new Text(m_font);
+
+	m_textTitle = new Text(m_fontLarge);
+	m_textTitle->Create(g_engine.GetRenderer(), "title", Color{ 0,1,0,0 });
+	
+
+
     return true;
 }
 
@@ -23,7 +38,8 @@ void ThaGame::Update(float dt)
 	case eState::Title:
 		if (m_engine->GetInput().GetKeyDown(SDL_SCANCODE_SPACE)) {
 			m_state = eState::StartGame;
-		}
+		} 
+		
 		break;
 	case eState::StartGame:
 		m_score = 0;
@@ -63,7 +79,6 @@ void ThaGame::Update(float dt)
 	default:
 		break;
 	}
-
 	m_scene->Update(dt);
 }
 
@@ -73,6 +88,7 @@ void ThaGame::Draw(Renderer& renderer)
 	{
 	case ThaGame::eState::Title:
 		//Draw text
+		m_textTitle->Draw(g_engine.GetRenderer(), 40, 20);
 		break;
 	case ThaGame::eState::GameOver:
 		//Draw text
