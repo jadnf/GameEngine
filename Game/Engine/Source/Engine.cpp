@@ -1,18 +1,20 @@
 #include "Engine.h"
+
 Engine g_engine;
 
 bool Engine::Initialize()
 {
-	m_renderer = new Renderer();
-	m_input = new Input();
-	m_audio = new Audio();
+	m_renderer = std::make_unique<Renderer>();
+	m_input = std::make_unique <Input>();
+	m_audio = std::make_unique <Audio>();
+	m_particleSystem = std::make_unique<ParticleSystem>();
 
 	m_renderer->Initialize();
 	m_renderer->CreateWindow("Game Engine", 800, 800);
 	m_input->Initialize();
 	m_audio->Initialize();
 
-	m_time = new Time();
+	m_time = std::make_unique <Time>();
 	return true;
 }
 
@@ -37,4 +39,6 @@ void Engine::Update()
 	m_time->Tick();
 	m_audio->Update();
 	m_input->Update();
+
+	m_particleSystem->Update(m_time->GetDeltaTime());
 }

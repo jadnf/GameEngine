@@ -1,4 +1,8 @@
-﻿  Text.cpp
+﻿  Engine.cpp
+  Particle.cpp
+  ParticleSystem.cpp
+  Generating Code...
+C:\NeumontWorkspace\C++2\GameEngine\Game\Engine\Source\ParticleSystem.cpp(31,1): warning C4715: 'ParticleSystem::GetFreeParticle': not all control paths return a value
 fmod_vc.lib(fmod.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in sdl2.lib(SDL2.dll); second definition ignored
 sdl2_ttf.lib(SDL2_ttf.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in sdl2.lib(SDL2.dll); second definition ignored
   Engine.vcxproj -> C:\NeumontWorkspace\C++2\GameEngine\Game\x64\Debug\Engine.lib

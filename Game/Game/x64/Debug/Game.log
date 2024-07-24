@@ -1,2 +1,21 @@
-﻿  ThaGame.cpp
+﻿  Bullet.cpp
+C:\NeumontWorkspace\C++2\GameEngine\Game\Game\Source\Bullet.cpp(8,36): warning C4244: 'argument': conversion from 'const float' to 'unsigned int', possible loss of data
+C:\NeumontWorkspace\C++2\GameEngine\Game\Game\Source\Bullet.cpp(8,29): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\NeumontWorkspace\C++2\GameEngine\Game\Game\Source\Bullet.cpp(9,16): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\NeumontWorkspace\C++2\GameEngine\Game\Game\Source\Bullet.cpp(9,11): warning C4305: 'argument': truncation from 'double' to 'float'
+  Main.cpp
+  Player.cpp
+  ThaGame.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56): warning C4244:         with
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56): warning C4244:         [
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56): warning C4244:             _Ty=int
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56): warning C4244:         ]
+  (compiling source file 'Source/ThaGame.cpp')
+  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(3434,56):
+  the template instantiation context (the oldest one first) is
+  	C:\NeumontWorkspace\C++2\GameEngine\Game\Game\Source\ThaGame.cpp(59,23):
+  	see reference to function template instantiation 'std::unique_ptr<Player,std::default_delete<Player>> std::make_unique<Player,int,Transform&,Model*&,0>(int &&,Transform &,Model *&)' being compiled
+  
+  Generating Code...
   Game.vcxproj -> C:\NeumontWorkspace\C++2\GameEngine\Game\x64\Debug\Game.exe

@@ -19,7 +19,10 @@ bool ThaGame::Initialize()
 	
 	m_textLives = new Text(m_font);
 
+	m_textScore = new Text(m_font);
+
 	m_textTitle = new Text(m_fontLarge);
+
 	m_textTitle->Create(g_engine.GetRenderer(), "title", Color{ 0,1,0,0 });
 	
 
@@ -44,16 +47,19 @@ void ThaGame::Update(float dt)
 	case eState::StartGame:
 		m_score = 0;
 		m_state = eState::StartLevel;
+
+		m_textLives->Create(g_engine.GetRenderer(), std::to_string(m_lives), Color{ 0,1,0,0 });
+		m_textScore->Create(g_engine.GetRenderer(), std::to_string(m_score), Color{ 0,1,0,0 });
 		break;
 	case eState::StartLevel:
 		{
 			Model* model = new Model{ GameData::shipPoints, Color{0,1,0,0} };
 			Scene* scene = new Scene();
 			Transform transform{ {g_engine.GetRenderer().GetWidth() >> 1,g_engine.GetRenderer().GetHeight() >> 1}, 0, 10 };
-			Player* player = new Player(600, transform, model);
+			auto player = std::make_unique<Player>(600, transform, model);
 			player->SetDamping(1.4f);
 			player->SetTag("Player");
-			m_scene->AddActor(player);
+			m_scene->AddActor(std::move(player));
 		}
 		m_spawnTime = 3;
 		m_spawnTimer = m_spawnTime;
@@ -66,10 +72,10 @@ void ThaGame::Update(float dt)
 			m_spawnTime -= 0.2f;
 			m_spawnTimer = m_spawnTime;
 			Model* enemyModel = new Model{ GameData::shipPoints, Color{1,0,0,0} };
-			auto* enemy = new Enemy(1000, Transform{ {g_engine.GetRenderer().GetWidth(), g_engine.GetRenderer().GetWidth()}, 0, 10 }, enemyModel);
+			auto enemy = std::make_unique<Enemy>(1000, Transform{ {g_engine.GetRenderer().GetWidth(), g_engine.GetRenderer().GetWidth()}, 0, 10 }, enemyModel);
 			enemy->SetDamping(1.0f);
 			enemy->SetTag("Enemy");
-			m_scene->AddActor(enemy);
+			m_scene->AddActor(std::move(enemy));
 		}
 		break;
 	case eState::PlayerDead:
@@ -90,13 +96,17 @@ void ThaGame::Draw(Renderer& renderer)
 		//Draw text
 		m_textTitle->Draw(g_engine.GetRenderer(), 40, 20);
 		break;
+
+	case ThaGame::eState::Game:
+		m_textLives->Draw(g_engine.GetRenderer(), 20, 20);
+		m_textLives->Draw(g_engine.GetRenderer(), g_engine.GetRenderer().GetWidth() - 80, 20);
+
+		break;
 	case ThaGame::eState::GameOver:
 		//Draw text
 		break;
 	default:
 		break;
 	}
-	//draw score
-	//draw lives
 	m_scene->Draw(renderer);
 }

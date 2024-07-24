@@ -10,10 +10,12 @@
 #include "MathUtils.h"
 #include "Model.h"
 #include "Transform.h"
+#include "ParticleSystem.h"
 
 #include <SDL.h>
 #include <fmod.hpp>
 #include <iostream>
+#include <memory>
 
 #define RENDERER g_engine.GetRenderer()
 
@@ -30,6 +32,7 @@ public:
 	Renderer& GetRenderer() { return *m_renderer; }
 	Input& GetInput() { return *m_input; }
 	Audio& GetAudio() { return *m_audio; }
+	ParticleSystem& GetPS() { return *m_particleSystem; }
 
 	Time& GetTime() { return *m_time; }
 
@@ -38,11 +41,12 @@ public:
 private:
 	bool quit{ false };
 
-	Time* m_time{ nullptr };
+	std::unique_ptr<Time> m_time;
 
-	Renderer* m_renderer{ nullptr };
-	Input* m_input{ nullptr };
-	Audio* m_audio{ nullptr };
+	std::unique_ptr<Renderer> m_renderer;
+	std::unique_ptr<Input> m_input;
+	std::unique_ptr<Audio> m_audio;
+	std::unique_ptr<ParticleSystem> m_particleSystem;
 
 };
 

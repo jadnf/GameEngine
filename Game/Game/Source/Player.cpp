@@ -9,11 +9,11 @@ void Player::Update(float dt)
 {
 	//movement
 	float thrust = 0;
-	if (g_engine.GetInput().GetKeyDown(SDL_SCANCODE_DOWN)) thrust = -m_speed;
-	if (g_engine.GetInput().GetKeyDown(SDL_SCANCODE_UP)) thrust = m_speed;
+	if (g_engine.GetInput().GetKeyDown(SDL_SCANCODE_S)) thrust = -m_speed;
+	if (g_engine.GetInput().GetKeyDown(SDL_SCANCODE_W)) thrust = m_speed;
 
-	if (g_engine.GetInput().GetKeyDown(SDL_SCANCODE_LEFT)) m_transform.rotation -= Math::DegToRad(100) * dt;
-	if (g_engine.GetInput().GetKeyDown(SDL_SCANCODE_RIGHT)) m_transform.rotation += Math::DegToRad(100) * dt;
+	if (g_engine.GetInput().GetKeyDown(SDL_SCANCODE_A)) m_transform.rotation -= Math::DegToRad(100) * dt;
+	if (g_engine.GetInput().GetKeyDown(SDL_SCANCODE_D)) m_transform.rotation += Math::DegToRad(100) * dt;
 
 	Vector2 acceleration = Vector2{ 1.0f,0.0f }.Rotate(m_transform.rotation) * thrust;
 
@@ -25,7 +25,7 @@ void Player::Update(float dt)
 	//fire
 	m_fireTimer -= dt;
 	if (g_engine.GetInput().GetKeyDown(SDL_SCANCODE_SPACE) && m_fireTimer <= 0) {
-		m_fireTimer = 0.5f;
+		m_fireTimer = 0.2f;
 
 		std::vector<Vector2> points;
 		points.push_back(Vector2{ 5, 0 });
@@ -37,10 +37,11 @@ void Player::Update(float dt)
 		Model* model = new Model{ GameData::bulletPoints, Color{1, 1, 1, 0 } };
 		Transform transform{ m_transform.position, m_transform.rotation, 1.0f };
 
-		Bullet* bullet = new Bullet(400.0f, transform, model);
+		auto bullet = std::make_unique<Bullet>(400.0f, transform, model);
 		bullet->SetLifespan(1);
 		bullet->SetTag("Player");
-		m_scene->AddActor(bullet);
+		m_scene->AddActor(std::move(bullet));
+		
 	}
 
 	Actor::Update(dt);

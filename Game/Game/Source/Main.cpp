@@ -29,9 +29,11 @@ int main(int argc, char* argv[])
 		g_engine.GetRenderer().BeginFrame();
 
 		game->Draw(g_engine.GetRenderer());
+		g_engine.GetPS().Draw(g_engine.GetRenderer());
 
 		g_engine.GetRenderer().EndFrame();
 	}
+	g_engine.Shutdown();
 
 	return 0;
 }
